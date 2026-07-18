@@ -1,5 +1,5 @@
 
-import mongoose from "mongoose"
+import mongoose, { mongo } from "mongoose"
 
 
 const userSchema = new mongoose.Schema({
@@ -37,6 +37,13 @@ const userSchema = new mongoose.Schema({
         default: "USER",
         enum: ["USER", "ADMIN"]
     },
+    address: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "address",
+        unique: true,
+        required: true
+
+    }
 
 
 
