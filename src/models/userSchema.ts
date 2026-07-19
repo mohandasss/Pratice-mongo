@@ -1,69 +1,101 @@
+import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
-import mongoose, { mongo } from "mongoose"
+import { Document } from "mongoose";
 
+export interface IUser extends Document {
+    name: string;
+    email: string;
+    password: string;
+    phone: string;
+    isVerified: boolean;
+    role: "USER" | "ADMIN";
+    address?: {
+        houseNo?: string;
+        landmark?: string;
+        city?: string;
+        state?: string;
+        pincode?: string;
+    };
 
-const userSchema = new mongoose.Schema({
-    name: {
-        type: String,
-        required: true,
-
-
-
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true,
-        lowercase: true,
-        trim: true
-
-    }
-    ,
-    phone: {
-        type: Number,
-        required: true,
-        unique: true,
-        trim: true,
-        minlength: 10,
-        maxlength: 10
-    },
-    isVerified: {
-        type: Boolean,
-        default: false
-    },
-    role: {
-        type: String,
-        required: true,
-        default: "USER",
-        enum: ["USER", "ADMIN"]
-    },
-    address: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "address",
-        unique: true,
-        required: true
-
-    }
-
-
-
-
+    isPasswordValid(password: string): Promise<boolean>;
 }
-    ,
+
+const userSchema = new mongoose.Schema<IUser>(
+    {
+        name: {
+            type: String,
+            required: true,
+            trim: true,
+        },
+
+        email: {
+            type: String,
+            required: true,
+        },
+
+        password: {
+            type: String,
+            required: true,
+        },
+
+        phone: {
+            type: String,
+            required: true,
+            unique: true,
+        },
+
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
+
+        role: {
+            type: String,
+            enum: ["USER", "ADMIN"],
+            default: "USER",
+        },
+
+        address: {
+            houseNo: {
+                type: String,
+            },
+
+            landmark: {
+                type: String,
+            },
+
+            city: {
+                type: String,
+            },
+
+            state: {
+                type: String,
+            },
+
+            pincode: {
+                type: String,
+            },
+        },
+    },
     {
         timestamps: true,
     }
-)
+);
 
-const User = mongoose.model('user', userSchema)
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) {
+        return;
+    }
 
-export default User
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+});
 
+userSchema.methods.isPasswordValid = async function (password: string) {
+    return bcrypt.compare(password, this.password);
+};
 
-// email: {
-//   type: String,
-//   required: true,
-//   unique: true,
-//   lowercase: true,
-//   trim: true
-// }
+const User = mongoose.model("user", userSchema);
+
+export default User;

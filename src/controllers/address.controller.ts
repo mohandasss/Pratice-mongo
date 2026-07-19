@@ -31,12 +31,12 @@ export const addAddress = async (req: Request, res: Response) => {
 export const getAddress = async (req: Request, res: Response) => {
 
     const userId = req.body.id;
-    console.log(userId)
+    //console.log(userId)
 
 
     try {
-        const userAddress = await User.findById(userId).populate("address")
-        console.log("userAddress", userAddress)
+        const userAddress = await User.find(userId)
+        //console.log("userAddress", userAddress)
 
 
         return sendResponse(res, 200, true, "Address Fetched Successfully", userAddress)

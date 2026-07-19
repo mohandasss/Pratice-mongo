@@ -10,7 +10,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
     try {
 
-        const allUsers = await User.find().select("name email phone")
+        const allUsers = await User.find()
         if (!allUsers) {
             return sendResponse(res, 404, false, "No users found")
         }
@@ -28,31 +28,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 
 //add users
-export const Adduser = async (req: Request, res: Response) => {
-    try {
 
-        const { name, email, phone } = req.body;
-
-        // zod validation
-        const result = createUserSchema.safeParse(req.body)
-
-
-        if (!result.success) {
-            return sendResponse(res, 400, false, "Please provide all the fields", result.error)
-        }
-
-        const user = await User.create({
-            name,
-            email,
-            phone
-        });
-
-        return sendResponse(res, 201, true, "User added successfully", user)
-
-    } catch (error) {
-        return sendResponse(res, 500, false, "Error adding user", error)
-    }
-}
 
 
 

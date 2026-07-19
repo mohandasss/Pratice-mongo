@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 
 
 const addressSchema = new mongoose.Schema({
+    houseNo:{
+        type : Number,
+        required : true,
+        trim : true,
+        
+    },
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
