@@ -2,6 +2,7 @@ import { Request, Response } from "express"
 import { sendResponse } from "../utils/apiResponse"
 import { createUserSchema } from "../validations/validators"
 import User from "../models/userSchema"
+import redisClient from "../config/redis"
 
 
 
@@ -9,14 +10,24 @@ import User from "../models/userSchema"
 export const getAllUsers = async (req: Request, res: Response) => {
 
     try {
+        const cacheResponse = await redisClient.get(`allusers`)
 
+        if (cacheResponse) {
+            const response = JSON.parse(cacheResponse || '{}')
+            return sendResponse(res, 200, true, "Users fetched successfully from cache", response)
+        }
         const allUsers = await User.find()
+        console.log("------->", allUsers)
         if (!allUsers) {
             return sendResponse(res, 404, false, "No users found")
         }
 
+
+        await redisClient.set(`allusers`, JSON.stringify(allUsers))
+
         return sendResponse(res, 200, true, "Users fetched successfully", allUsers)
     } catch (error) {
+        console.log(error)
         return sendResponse(res, 500, false, "error")
     }
 
@@ -55,6 +66,8 @@ export const updateuser = async (req: Request, res: Response) => {
         if (!updatedUser) {
             return sendResponse(res, 404, false, "User not found")
         }
+
+        await redisClient.del(`allusers`)
         return sendResponse(res, 200, true, "User updated successfully", updatedUser)
 
 
@@ -83,7 +96,7 @@ export const deleteUser = async (req: Request, res: Response) => {
         if (!response) {
             return sendResponse(res, 400, true, "please provide proper user id")
         }
-
+        await redisClient.del(`allusers`)
         return sendResponse(res, 200, true, "User Deleted successfully", null)
 
 

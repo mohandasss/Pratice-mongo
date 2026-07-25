@@ -17,4 +17,5 @@ app.use("/", postRouter)
 app.use("/", addressRouter)
 app.use("/auth",authRouter)
 
+
 export default app;
