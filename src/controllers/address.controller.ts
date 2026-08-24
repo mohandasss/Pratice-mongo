@@ -23,9 +23,6 @@ export const addAddress = async (req: Request, res: Response) => {
         return sendResponse(res, 500, false, "Failed to add address", error)
     }
 
-
-
-
 }
 
 export const getAddress = async (req: Request, res: Response) => {
@@ -46,3 +43,4 @@ export const getAddress = async (req: Request, res: Response) => {
 
 
 }   
+

@@ -11,12 +11,7 @@ export const userRegister = async (req: Request, res: Response) => {
         const { name, email, phone, password } = req.body;
         const { houseno, landmark, city, state, pincode } = req.body.address;
 
-        // const result = createUserSchema.safeParse(req.body)
-
-
-        // if (!result.success) {
-        //     return sendResponse(res, 400, false, "Please provide all the fields", result.error)
-        // }
+        
         console.log(req.body)
         const user = await User.create({
             name,

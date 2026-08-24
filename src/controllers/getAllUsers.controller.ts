@@ -17,7 +17,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
             return sendResponse(res, 200, true, "Users fetched successfully from cache", response)
         }
         const allUsers = await User.find()
-        console.log("------->", allUsers)
+        
         if (!allUsers) {
             return sendResponse(res, 404, false, "No users found")
         }
@@ -84,6 +84,7 @@ export const updateuser = async (req: Request, res: Response) => {
 
 //delete user
 export const deleteUser = async (req: Request, res: Response) => {
+    console.log("delete user called")
     const { id } = req.params
 
     if (!id) {

@@ -44,4 +44,5 @@ export const createUserSchema = z.object({
       .length(6, "Pincode must be exactly 6 digits")
       .regex(/^\d+$/, "Pincode must contain only digits"),
   }).optional(),
+  
 });
