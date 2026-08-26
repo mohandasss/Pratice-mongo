@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import app from "./app";
 import redisClient from "./config/redis";
 
+import '../src/workers/thumbnailWorker'
 dotenv.config();
 
 const PORT = process.env.PORT || 5000;

@@ -13,18 +13,16 @@ export const addCompanyLogo = async (req: Request, res: Response) => {
     return sendResponse(res, 400, false, "Name and logo are required", null);
   }
 
-  
   try {
-    console.log('beforeee')
     const cloudinaryUrl = await uploadToCloudinary(fileBuffer);
-    console.log('afterrr')
+
     const response = await company.create({
       name,
       logo: cloudinaryUrl,
     });
 
     await thumbnailQueue.add("generateThumbnail", {
-      logo: response.logo,
+      imageBuffer: fileBuffer.toString("base64"),
       companyId: response._id,
     });
 
